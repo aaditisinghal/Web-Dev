@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated CO₂ Savings Counter</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+            color: #333;
+        }
+
+        .counter-container {
+            background: #fff;
+            padding: 40px 60px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        h1 {
+            color: #444;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+        
+        .counter-display {
+            font-size: 4rem;
+            font-weight: 700;
+            color: #28a745;
+            transition: color 0.5s ease;
+            min-height: 1em; /* Prevent layout shift */
+        }
+        
+        .unit {
+            font-size: 1.5rem;
+            color: #6c757d;
+            margin-left: 10px;
+        }
+
+        .saving-label {
+            margin-top: 10px;
+            font-size: 1.2rem;
+            color: #555;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Unit-specific colors for visual feedback */
+        .grams-color { color: #28a745; }
+        .kilograms-color { color: #17a2b8; }
+        .tons-color { color: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="counter-container">
+        <h1>CO₂ Saved This Year</h1>
+        <div class="counter-display">
+            <span id="counter-value">0</span>
+            <span id="counter-unit" class="unit">g</span>
+        </div>
+        <div class="saving-label">
+            <p>Your annual CO₂ savings make a difference.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const counterValueElement = document.getElementById('counter-value');
+            const counterUnitElement = document.getElementById('counter-unit');
+            const counterDisplayContainer = document.querySelector('.counter-display');
+            
+            const totalCO2SavedPerYear = 1500000; // Example: 1.5 tons of CO2 saved
+            const duration = 5000; // 5 seconds for the full animation
+            const framesPerSecond = 60;
+            const totalFrames = (duration / 1000) * framesPerSecond;
+            const incrementPerFrame = totalCO2SavedPerYear / totalFrames;
+            
+            let currentValue = 0;
+            let currentUnit = 'g';
+
+            function animateCounter(frame = 0) {
+                currentValue += incrementPerFrame;
+                
+                // Set the initial grams value
+                let displayedValue = Math.floor(currentValue);
+                let displayedUnit = 'g';
+                let newColorClass = 'grams-color';
+
+                // Transition to kilograms
+                if (currentValue >= 1000) {
+                    displayedValue = (currentValue / 1000).toFixed(2);
+                    displayedUnit = 'kg';
+                    newColorClass = 'kilograms-color';
+                }
+                
+                // Transition to tons
+                if (currentValue >= 1000000) {
+                    displayedValue = (currentValue / 1000000).toFixed(2);
+                    displayedUnit = 'tons';
+                    newColorClass = 'tons-color';
+                }
+
+                // Update the display
+                counterValueElement.textContent = displayedValue;
+                counterUnitElement.textContent = displayedUnit;
+
+                // Add color class
+                counterDisplayContainer.classList.remove('grams-color', 'kilograms-color', 'tons-color');
+                counterDisplayContainer.classList.add(newColorClass);
+
+                if (frame < totalFrames) {
+                    requestAnimationFrame(() => animateCounter(frame + 1));
+                } else {
+                    // Ensure final values are exact and clean
+                    counterValueElement.textContent = (totalCO2SavedPerYear / 1000000).toFixed(2);
+                    counterUnitElement.textContent = 'tons';
+                }
+            }
+
+            animateCounter();
+        });
+    </script>
+</body>
+</html>
