@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spotlight Text</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000;
+      font-family: "Inter", sans-serif;
+    }
+
+    .spotlight {
+      font-size: clamp(28px, 6vw, 92px);
+      font-weight: 800;
+      line-height: 1.2;
+      text-align: center;
+      max-width: 1200px;
+      color: #555; /* dimmed text */
+      position: relative;
+
+      /* use mask to reveal white */
+      background: white;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+
+      --x: 50%;
+      --y: 50%;
+      background-image: radial-gradient(
+        circle 200px at var(--x) var(--y),
+        white 0%,
+        white 40%,
+        #555 80%
+      );
+    }
+  </style>
+</head>
+<body>
+  <div class="spotlight" id="spotlight">
+    all your personal data and <br>
+    transactions are encrypted and <br>
+    secured. there's no room for mistakes <br>
+    because we didn't leave any.
+  </div>
+
+  <script>
+    const spotlight = document.getElementById("spotlight");
+    document.addEventListener("mousemove", e => {
+      let x = e.clientX + "px";
+      let y = e.clientY + "px";
+      spotlight.style.setProperty("--x", x);
+      spotlight.style.setProperty("--y", y);
+    });
+  </script>
+</body>
+</html>
+
